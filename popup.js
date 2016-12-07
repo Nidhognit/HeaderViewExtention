@@ -9,6 +9,7 @@ chrome.tabs.getSelected(null, function (tab) {
             tab_id: tab.id
         },
         function (response) {
-            document.getElementById('content').innerHTML = response.view;
+            console.log(response);
+            document.getElementById('content').appendChild(response.view);
         });
 });

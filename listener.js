@@ -1,58 +1,49 @@
 /**
  * Global vars & defs
- * Data: {tab_id: {request_id: [(object)], view: (string), statusCode: (int)}}
+ * Data: {tab_id: {request_id: [(object)], view: (object), statusCode: (int)}}
  */
-var data        = {},
-    default_msg = '<h4>Please, reload this page.</h4>',
-    error_msg   = '<h4>This tab is not supported.</h4>';
+var data = {},
+    default_msg = createElement('h4', 'Please, reload this page.'),
+    error_msg = createElement('h4', 'This tab is not supported.');
 
 /**
  * Clean & Record the received headers
  */
 chrome.webRequest.onHeadersReceived.addListener(function (details) {
-
         if (typeof data[details.tabId] === 'undefined' || typeof data[details.tabId][details.requestId] === 'undefined') {
-            // Init the entry for the tab && request id
-            // (Bonus: this also delete previous & outdated request entries. Did it by accident lol)
             data[details.tabId] = {
                 [details.requestId]: [],
-                statusCode         : details.statusCode,
-                view               : default_msg
+                statusCode: details.statusCode,
+                view: default_msg
             };
         }
 
-        // Push the received request details into the request id object
         data[details.tabId][details.requestId].push(details);
     },
     {
-        urls : ["http://*/*", "https://*/*"],
-        types: ['main_frame'] // Track only requests at top level (tab url)
+        urls: ["http://*/*", "https://*/*"],
+        types: ['main_frame']
     },
     ["responseHeaders"]
 );
 
 chrome.webRequest.onCompleted.addListener(function (details) {
-
         if (typeof data[details.tabId] === 'undefined' || typeof data[details.tabId][details.requestId] === 'undefined') {
-            // Init the entry for the tab && request id
-            // (Bonus: this also delete previous & outdated request entries. Did it by accident lol)
             data[details.tabId] = {
                 [details.requestId]: [],
-                statusCode         : details.statusCode,
-                view               : default_msg
+                statusCode: details.statusCode,
+                view: default_msg
             };
 
-            // Fallback, fill with the only data available
             data[details.tabId][details.requestId].push(details);
         }
 
-        // Render popup html with parsed info
-        data[details.tabId].view = renderPopup(data[details.tabId][details.requestId]);
+        data[details.tabId].view = renderPopup2(data[details.tabId][details.requestId]);
 
     },
     {
-        urls : ["http://*/*", "https://*/*"],
-        types: ['main_frame'] // Track only requests at top level (tab url)
+        urls: ["http://*/*", "https://*/*"],
+        types: ['main_frame']
     },
     ["responseHeaders"]
 );
@@ -62,21 +53,17 @@ chrome.webRequest.onCompleted.addListener(function (details) {
  */
 chrome.tabs.onUpdated.addListener(function (tabId, info) {
     if (info.status === "complete") {
-        //set badge for status code if different than 200 OK
         chrome.browserAction.setBadgeText({
-            text : (data[tabId] && data[tabId].statusCode !== 200) ? data[tabId].statusCode.toString() : '',
+            text: (data[tabId] && data[tabId].statusCode !== 200) ? data[tabId].statusCode.toString() : '',
             tabId: tabId
         });
-        // Re-enable the button
         chrome.browserAction.enable(tabId);
 
-        // Mark unsuported tabs
         if (!data[tabId]) {
-            data[tabId] = {view: error_msg};
+            data[tabId].view= error_msg;
         }
 
     } else if (info.status === "loading") {
-        //disable the button
         chrome.browserAction.disable(tabId);
     }
 });
@@ -110,23 +97,19 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
 
 /**
  * Render the popup view element
- * @param obj
  * @returns {string}
  */
 function renderPopup(responses) {
-    //set default message & vars
     var view = default_msg;
 
     if (typeof responses === 'object' && responses.length > 0) {
-        view = ''; // reset the view
+        view = '';
+        for (var i = 0, l = responses.length; i < l; i++) {
 
-        // iterates through request path and builds the tables
-        for (var i = 0,l = responses.length; i < l; i++) {
-
-            var headers   = responses[i].responseHeaders,
-                url       = responses[i].url,
-                method    = responses[i].method,
-                status    = responses[i].statusLine,
+            var headers = responses[i].responseHeaders,
+                url = responses[i].url,
+                method = responses[i].method,
+                status = responses[i].statusLine,
 
                 colorClass = (responses[i].statusCode === 200) ? 'success'
                     : (responses[i].statusCode < 400) ? 'warning' : 'error';
@@ -156,4 +139,62 @@ function renderPopup(responses) {
     }
 
     return view;
+}
+
+function renderPopup2(responses) {
+    if (typeof responses === 'object' && responses.length > 0) {
+        var view = document.createElement('div');
+        for (var i = 0, l = responses.length; i < l; i++) {
+
+            var headers = responses[i].responseHeaders,
+                url = responses[i].url,
+                method = responses[i].method,
+                status = responses[i].statusLine,
+
+                colorClass = (responses[i].statusCode === 200) ? 'success'
+                    : (responses[i].statusCode < 400) ? 'warning' : 'error';
+
+            headers.sort(function (a, b) {
+                return (a.name.localeCompare(b.name))
+            });
+
+            var table = document.createElement('table');
+            var thead = document.createElement('thead');
+            table.appendChild(thead);
+            thead.className = colorClass;
+            var tr = document.createElement('tr');
+            thead.appendChild(tr);
+            var th = document.createElement('th');
+            tr.appendChild(th);
+            th.colspan = 2;
+            th.appendChild(createElement('span', status));
+            th.appendChild(createElement('strong', method));
+            th.appendChild(createElement('span', url));
+
+            var tbody = document.createElement('tbody');
+            table.appendChild(tbody);
+            //build the headers rows
+            for (var key in headers) {
+                if (headers.hasOwnProperty(key)) {
+                    headers[key].name = headers[key].name.replace(new RegExp('-', 'g'), '&#8209;'); //non breaking dash replace
+                    var newtr = document.createElement('tr');
+                    newtr.appendChild(createElement('td', headers[key].name));
+                    newtr.appendChild(createElement('td', headers[key].value));
+                    tbody.appendChild(newtr);
+                }
+            }
+
+            view.appendChild(table);
+        }
+
+    } else {
+        view = default_msg;
+    }
+
+    return view;
+}
+function createElement(name, text) {
+    var el = document.createElement(name);
+    el.innerText = text;
+    return el;
 }
