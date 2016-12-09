@@ -2,57 +2,59 @@
  * Global vars & defs
  * Data: {tab_id: {request_id: [(object)], view: (object), statusCode: (int)}}
  */
+
+function h(tag = 'div', props = {}, children = []) {
+    return {
+        tag,
+        props,
+        children
+    };
+}
+
 var data = {},
-    default_msg = createElement('h4', 'Please, reload this page.'),
-    error_msg = createElement('h4', 'This tab is not supported.');
+    default_msg = h('h4', {}, 'Please, reload this page.'),
+    error_msg = h('h4', {}, 'This tab is not supported.');
 
 /**
  * Clean & Record the received headers
  */
 chrome.webRequest.onHeadersReceived.addListener(function (details) {
-        if (typeof data[details.tabId] === 'undefined' || typeof data[details.tabId][details.requestId] === 'undefined') {
-            data[details.tabId] = {
-                [details.requestId]: [],
-                statusCode: details.statusCode,
-                view: default_msg
-            };
-        }
+    if (typeof data[details.tabId] === 'undefined' || typeof data[details.tabId][details.requestId] === 'undefined') {
+        data[details.tabId] = {
+            [details.requestId]: [],
+            statusCode: details.statusCode,
+            view: default_msg
+        };
+    }
 
-        data[details.tabId][details.requestId].push(details);
-    },
-    {
-        urls: ["http://*/*", "https://*/*"],
-        types: ['main_frame']
-    },
-    ["responseHeaders"]
-);
+    data[details.tabId][details.requestId].push(details);
+}, {
+    urls: ['http://*/*', 'https://*/*'],
+    types: ['main_frame']
+}, ['responseHeaders']);
 
 chrome.webRequest.onCompleted.addListener(function (details) {
-        if (typeof data[details.tabId] === 'undefined' || typeof data[details.tabId][details.requestId] === 'undefined') {
-            data[details.tabId] = {
-                [details.requestId]: [],
-                statusCode: details.statusCode,
-                view: default_msg
-            };
+    if (typeof data[details.tabId] === 'undefined' || typeof data[details.tabId][details.requestId] === 'undefined') {
+        data[details.tabId] = {
+            [details.requestId]: [],
+            statusCode: details.statusCode,
+            view: default_msg
+        };
 
-            data[details.tabId][details.requestId].push(details);
-        }
+        data[details.tabId][details.requestId].push(details);
+    }
 
-        data[details.tabId].view = renderPopup2(data[details.tabId][details.requestId]);
-
-    },
-    {
-        urls: ["http://*/*", "https://*/*"],
-        types: ['main_frame']
-    },
-    ["responseHeaders"]
-);
+    data[details.tabId].view = renderPopup(data[details.tabId][details.requestId]);
+}, {
+    urls: ['http://*/*', 'https://*/*'],
+    types: ['main_frame']
+}, ['responseHeaders']);
 
 /**
  * Update extension icon with status code badge
  */
 chrome.tabs.onUpdated.addListener(function (tabId, info) {
-    if (info.status === "complete") {
+    if (info.status === 'complete') {
         chrome.browserAction.setBadgeText({
             text: (data[tabId] && data[tabId].statusCode !== 200) ? data[tabId].statusCode.toString() : '',
             tabId: tabId
@@ -63,7 +65,7 @@ chrome.tabs.onUpdated.addListener(function (tabId, info) {
             data[tabId].view= error_msg;
         }
 
-    } else if (info.status === "loading") {
+    } else if (info.status === 'loading') {
         chrome.browserAction.disable(tabId);
     }
 });
@@ -89,112 +91,101 @@ chrome.webNavigation.onTabReplaced.addListener(function (details) {
  */
 chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
     if (
-        request.action === "show_headers" &&
+        request.action === 'show_headers' &&
         sender.id === chrome.runtime.id
     ) sendResponse(data[request.tab_id] || {view: default_msg});
 });
 
-
 /**
- * Render the popup view element
+ * nonBreakingDash
+ * non breaking dash replace
+ * @param str
  * @returns {string}
  */
+function nonBreakingDash(str) {
+    return str.replace(/-/g, '\u2011');
+}
+
+function forOwn(obj, callback) {
+    for (var key in obj) {
+        if (obj.hasOwnProperty(key)) {
+            callback(obj[key], key, obj);
+        }
+    }
+}
+
+function mapForOwn(obj, callback) {
+    var arr = [];
+
+    forOwn(obj, function (value, key, _obj) {
+        arr.push(callback(value, key, _obj));
+    });
+
+    return arr;
+}
+
+function compareHeaders(a, b) {
+    var aName = a.name || '';
+    var bName = b.name || '';
+    return aName.localeCompare(bName);
+}
+
+function isArrayEmpty(arr) {
+    return arr.length === 0;
+}
+
+function getClassForStatusCode(statusCode) {
+    if (statusCode === 200) {
+        return 'success';
+    }
+
+    if (statusCode < 400) {
+        return 'warning';
+    }
+
+    return 'error';
+}
+
 function renderPopup(responses) {
-    var view = default_msg;
+    if (!Array.isArray(responses) || isArrayEmpty(responses)) {
+        return default_msg;
+    }
 
-    if (typeof responses === 'object' && responses.length > 0) {
-        view = '';
-        for (var i = 0, l = responses.length; i < l; i++) {
+    var view = h();
 
-            var headers = responses[i].responseHeaders,
-                url = responses[i].url,
-                method = responses[i].method,
-                status = responses[i].statusLine,
+    for (var i = 0, l = responses.length; i < l; i++) {
+        var {
+            responseHeaders,
+            url,
+            method,
+            statusLine,
+            statusCode
+        } = responses[i];
 
-                colorClass = (responses[i].statusCode === 200) ? 'success'
-                    : (responses[i].statusCode < 400) ? 'warning' : 'error';
+        responseHeaders.sort(compareHeaders);
 
-            headers.sort(function (a, b) {
-                return (a.name.localeCompare(b.name))
-            });
+        var table = h('table', {}, [
+            h('thead', { className: getClassForStatusCode(statusCode) }, [
+                h('tr', {}, [
+                    h('th', { colSpan: 2 }, [
+                        h('span', {}, statusLine),
+                        h('strong', {}, method),
+                        h('span', {}, url)
+                    ])
+                ])
+            ]),
+            h('tbody', {}, mapForOwn(responseHeaders, function ({ name, value }) {
+                return h('tr', {}, [
+                    h('td', {}, nonBreakingDash(name)),
+                    h('td', {}, value)
+                ]);
+            }))
+        ]);
 
-            //start building html
-            view += '<table>';
-            //table headings
-            view += '<thead class="' + colorClass + '">';
-            view += '<tr><th colspan="2">' + status + '<span><strong>' + method + '</strong>&nbsp;' + url + '</span></th></tr>';
-            view += '</thead><tbody>';
+        //build the headers rows
 
-            //build the headers rows
-            for (var key in headers) {
-                if (headers.hasOwnProperty(key)) {
-                    headers[key].name = headers[key].name.replace(new RegExp('-', 'g'), '&#8209;'); //non breaking dash replace
-                    view += '<tr><td>' + headers[key].name + '</td><td>' + headers[key].value + '</td></tr>'
-                }
-            }
-
-            view += '</tbody></table>';
-        }
-
+        view.children.push(table);
     }
 
     return view;
-}
-
-function renderPopup2(responses) {
-    if (typeof responses === 'object' && responses.length > 0) {
-        var view = document.createElement('div');
-        for (var i = 0, l = responses.length; i < l; i++) {
-
-            var headers = responses[i].responseHeaders,
-                url = responses[i].url,
-                method = responses[i].method,
-                status = responses[i].statusLine,
-
-                colorClass = (responses[i].statusCode === 200) ? 'success'
-                    : (responses[i].statusCode < 400) ? 'warning' : 'error';
-
-            headers.sort(function (a, b) {
-                return (a.name.localeCompare(b.name))
-            });
-
-            var table = document.createElement('table');
-            var thead = document.createElement('thead');
-            table.appendChild(thead);
-            thead.className = colorClass;
-            var tr = document.createElement('tr');
-            thead.appendChild(tr);
-            var th = document.createElement('th');
-            tr.appendChild(th);
-            th.colspan = 2;
-            th.appendChild(createElement('span', status));
-            th.appendChild(createElement('strong', method));
-            th.appendChild(createElement('span', url));
-
-            var tbody = document.createElement('tbody');
-            table.appendChild(tbody);
-            //build the headers rows
-            for (var key in headers) {
-                if (headers.hasOwnProperty(key)) {
-                    headers[key].name = headers[key].name.replace(new RegExp('-', 'g'), '&#8209;'); //non breaking dash replace
-                    var newtr = document.createElement('tr');
-                    newtr.appendChild(createElement('td', headers[key].name));
-                    newtr.appendChild(createElement('td', headers[key].value));
-                    tbody.appendChild(newtr);
-                }
-            }
-
-            view.appendChild(table);
-        }
-
-    } else {
-        view = default_msg;
-    }
-
-    return view;
-}
-function createElement(name, text) {
-    var el = document.createElement(name);
-    el.innerText = text;
-    return el;
 }
