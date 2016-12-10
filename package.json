@@ -1,0 +1,26 @@
+{
+  "name": "headerviewextention",
+  "version": "1.0.0",
+  "description": "Extension that allows to view headers",
+  "main": "popup.js",
+  "scripts": {
+    "test": "eslint *.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Nidhognit/HeaderViewExtention.git"
+  },
+  "keywords": [
+    "extension",
+    "headers"
+  ],
+  "author": "Dimitri Kravchenko",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Nidhognit/HeaderViewExtention/issues"
+  },
+  "homepage": "https://github.com/Nidhognit/HeaderViewExtention#readme",
+  "devDependencies": {
+    "eslint": "^3.11.1"
+  }
+}
