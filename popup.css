@@ -55,13 +55,21 @@ td {
 
 td:first-child {
     font-size: 10px;
-    color: 	#000080;
+    color: #000080;
     text-transform: uppercase;
     width: 150px;
 }
 
+.info {
+    background-color: #00BFFF;
+}
+
 .success {
-    background-color: rgba(39, 174, 96, .3);
+    background-color: #00FF7F;
+}
+
+.redirect {
+    background-color: #7FFFD4;
 }
 
 .warning {

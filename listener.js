@@ -62,7 +62,7 @@ chrome.tabs.onUpdated.addListener(function (tabId, info) {
         chrome.browserAction.enable(tabId);
 
         if (!data[tabId]) {
-            data[tabId].view= error_msg;
+            data[tabId].view = error_msg;
         }
 
     } else if (info.status === 'loading') {
@@ -135,11 +135,16 @@ function isArrayEmpty(arr) {
 }
 
 function getClassForStatusCode(statusCode) {
-    if (statusCode === 200) {
+    if (statusCode < 200 && statusCode >= 100) {
+        return 'info';
+    }
+    else if (statusCode < 300 && statusCode >= 200) {
         return 'success';
     }
-
-    if (statusCode < 400) {
+    else if (statusCode < 400 && statusCode >= 300) {
+        return 'redirect';
+    }
+    else if (statusCode < 500 && statusCode >= 400) {
         return 'warning';
     }
 
@@ -160,14 +165,14 @@ function renderPopup(responses) {
             method,
             statusLine,
             statusCode
-        } = responses[i];
+            } = responses[i];
 
         responseHeaders.sort(compareHeaders);
 
         var table = h('table', {}, [
-            h('thead', { className: getClassForStatusCode(statusCode) }, [
+            h('thead', {className: getClassForStatusCode(statusCode)}, [
                 h('tr', {}, [
-                    h('th', { colSpan: 2 }, [
+                    h('th', {colSpan: 2}, [
                         h('span', {}, statusLine),
                         h('strong', {}, method),
                         h('span', {}, url)
