@@ -157,6 +157,7 @@ function renderPopup(responses) {
     }
 
     var view = h();
+    var SecurityRating = new SecurityHeaderRating();
 
     for (var i = 0, l = responses.length; i < l; i++) {
         var {
@@ -165,7 +166,7 @@ function renderPopup(responses) {
             method,
             statusLine,
             statusCode
-            } = responses[i];
+        } = responses[i];
 
         responseHeaders.sort(compareHeaders);
 
@@ -179,14 +180,16 @@ function renderPopup(responses) {
                     ])
                 ])
             ]),
-            h('tbody', {}, mapForOwn(responseHeaders, function ({ name, value }) {
+            h('tbody', {}, mapForOwn(responseHeaders, function ({name, value}) {
+                name = nonBreakingDash(name);
+                SecurityRating.checkHeader(name, value);
                 return h('tr', {}, [
-                    h('td', {}, nonBreakingDash(name)),
+                    h('td', {}, name),
                     h('td', {}, value)
                 ]);
             }))
         ]);
-
+        console.log(SecurityRating.getRating());
         //build the headers rows
 
         view.children.push(table);

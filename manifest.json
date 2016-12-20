@@ -7,7 +7,7 @@
   "background": {
     "persistent": true,
     "scripts": [
-      "listener.js"
+      "js/listener.js", "js/SecurityRating.js"
     ]
   },
   "browser_action": {
