@@ -7,7 +7,7 @@
   "background": {
     "persistent": true,
     "scripts": [
-      "js/listener.js", "js/SecurityRating.js"
+        "js/MessageCreator.js","js/listener.js"
     ]
   },
   "browser_action": {
