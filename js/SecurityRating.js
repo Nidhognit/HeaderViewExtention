@@ -1,6 +1,5 @@
 function SecurityHeaderRating() {
     this._CSP = 'content-security-policy'; // it some hard, for config, please read https://content-security-policy.com/
-    this._Cookies = 'cookies'; // must have "secure" or "httponly"
     this._HSTS = 'strict-transport-security'; // must be  strict-transport-security: max-age=15552000; or more
     this._HPKP = 'public-key-pins'; //optional https://wiki.mozilla.org/Security/Guidelines/Web_Security#HTTP_Public_Key_Pinning
     this._X_CTP = 'x-content-type-options'; // must be - x-xss-protection: nosniff;
@@ -11,35 +10,32 @@ function SecurityHeaderRating() {
 }
 
 SecurityHeaderRating.prototype.checkHeader = function (name, value) {
-    value = value.toLowerCase();
-    switch (name.toLowerCase()) {
+    name = name.toLowerCase();
+    switch (name) {
         case this._CSP:
-            this.checkCsp(value);
-            break;
-        case this._Cookies:
-            this.checkCookies(value);
+            this.checkCsp(value.toLowerCase());
             break;
         case this._HSTS:
-            this.checkHsts(value);
+            this.checkHsts(value.toLowerCase());
             break;
         case this._HPKP:
-            this.checkHpkp(value);
+            this.checkHpkp(value.toLowerCase());
             break;
         case this._X_CTP:
-            this.checkXctp(value);
+            this.checkXctp(value.toLowerCase());
             break;
         case this._X_Frame:
-            this.checkXframe(value);
+            this.checkXframe(value.toLowerCase());
             break;
         case this._X_XSS:
-            this.checkXxss(value);
+            this.checkXxss(value.toLowerCase());
             break;
     }
 };
 SecurityHeaderRating.prototype.getRating = function () {
-    if (this.rating === 10) {
+    if (this.rating <= 10) {
         return 'F';
-    }  else if (this.rating <= 20) {
+    } else if (this.rating <= 20) {
         return 'F+';
     } else if (this.rating <= 30) {
         return 'E';
@@ -62,17 +58,9 @@ SecurityHeaderRating.prototype.getRating = function () {
 
 SecurityHeaderRating.prototype.checkCsp = function (value) {
     if (value.search('unsafe-inline') || value.search('data:') || value.search('eval')) {
-        this.rating += 5;
+        this.rating += 10;
     } else {
-        this.rating += 25;
-    }
-};
-
-SecurityHeaderRating.prototype.checkCookies = function (value) {
-    if (value.search('secure') || value.search('httponly')) {
-        this.rating += 5;
-    } else {
-        this.rating += 20;
+        this.rating += 30;
     }
 };
 
@@ -89,18 +77,18 @@ SecurityHeaderRating.prototype.checkHpkp = function (value) {
 
 SecurityHeaderRating.prototype.checkXctp = function (value) {
     if (value == 'nosniff') {
-        this.rating += 5;
+        this.rating += 10;
     }
 };
 
 SecurityHeaderRating.prototype.checkXframe = function (value) {
     if (value == 'deny' || value == 'sameorigin') {
-        this.rating += 20;
+        this.rating += 25;
     }
 };
 
 SecurityHeaderRating.prototype.checkXxss = function (value) {
     if (parseInt(value) == 1) {
-        this.rating += 10;
+        this.rating += 15;
     }
 };

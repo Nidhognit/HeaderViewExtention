@@ -45,7 +45,6 @@ MessageAcceptance.prototype.getClassForStatusCode = function (statusCode) {
 MessageAcceptance.prototype.renderPopup = function (responses) {
     for (first in responses) break;
     responses = responses[first];
-    console.log(responses);
     var self = this;
     if (!Array.isArray(responses) || isArrayEmpty(responses)) {
         return this._default_msg;

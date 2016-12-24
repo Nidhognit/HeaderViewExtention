@@ -9,7 +9,6 @@ chrome.tabs.getSelected(null, function (tab) {
             tab_id: tab.id
         },
         function (response) {
-            console.log(response);
             var messageAcceptance = new MessageAcceptance();
             var popup = messageAcceptance.render(messageAcceptance.renderPopup(response));
             document.getElementById('content').appendChild(popup);
