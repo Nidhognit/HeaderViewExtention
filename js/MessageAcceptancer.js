@@ -1,7 +1,7 @@
 function MessageAcceptance() {
     this._default_msg = h('h4', {}, 'Please, reload this page.');
     this._error_msg = h('h4', {}, 'This tab is not supported.');
-    
+
 }
 MessageAcceptance.prototype.nonBreakingDash = function (str) {
     return str.replace(/-/g, '\u2011');
@@ -66,15 +66,6 @@ MessageAcceptance.prototype.renderPopup = function (responses) {
         responseHeaders.sort(compareHeaders);
 
         var table = h('table', {}, [
-            h('thead', {className: self.getClassForStatusCode(statusCode)}, [
-                h('tr', {}, [
-                    h('th', {colSpan: 2}, [
-                        h('span', {}, statusLine),
-                        h('strong', {}, method),
-                        h('span', {}, url)
-                    ])
-                ])
-            ]),
             h('tbody', {}, self.mapForOwn(responseHeaders, function ({name, value}) {
                 name = self.nonBreakingDash(name);
                 SecurityRating.checkHeader(name, value);
@@ -82,7 +73,17 @@ MessageAcceptance.prototype.renderPopup = function (responses) {
                     h('td', {}, name),
                     h('td', {}, value)
                 ]);
-            }))
+            })),
+            h('thead', {className: self.getClassForStatusCode(statusCode)}, [
+                h('tr', {}, [
+                    h('th', {colSpan: 2}, [
+                        h('span', {}, statusLine),
+                        h('strong', {}, method),
+                        h('span', {}, url),
+                        h('span', {className: 'circle-rating'}, SecurityRating.getRating())
+                    ])
+                ])
+            ])
         ]);
 
         view.children.push(table);
@@ -91,8 +92,8 @@ MessageAcceptance.prototype.renderPopup = function (responses) {
     return view;
 };
 
-MessageAcceptance.prototype.render = function ({ tag, props, children }) {
-    var self =this;
+MessageAcceptance.prototype.render = function ({tag, props, children}) {
+    var self = this;
     var el = document.createElement(tag);
     Object.assign(el, props);
 

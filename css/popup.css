@@ -79,3 +79,20 @@ td:first-child {
 .error {
     background-color: rgba(192, 57, 43, .3);
 }
+
+.circle-rating{
+    border-radius: 25%;
+    width: 30px;
+    height: 30px;
+    background: #F4A460;
+    border: solid 3px #804915;
+    font-size: 20px;
+    color: white;
+    text-align: center;
+    font-weight: bold;
+    margin: 5px;
+    padding: 10px 5px 0 5px;
+    position: absolute;
+    top: 20px;
+    right: 30px;
+}
