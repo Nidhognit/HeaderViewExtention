@@ -66,7 +66,7 @@ MessageAcceptance.prototype.renderPopup = function (responses) {
 
         var table = h('table', {}, [
             h('tbody', {}, self.mapForOwn(responseHeaders, function ({name, value}) {
-                name = self.nonBreakingDash(name);
+                // name = self.nonBreakingDash(name);
                 SecurityRating.checkHeader(name, value);
                 return h('tr', {}, [
                     h('td', {}, name),
