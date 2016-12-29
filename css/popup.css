@@ -90,9 +90,7 @@ td:first-child {
     color: white;
     text-align: center;
     font-weight: bold;
-    margin: 5px;
     padding: 10px 5px 0 5px;
-    position: absolute;
-    top: 20px;
-    right: 30px;
+    float: right;
+    margin-top: -43px;
 }
