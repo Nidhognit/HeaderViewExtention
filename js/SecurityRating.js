@@ -6,6 +6,8 @@ function SecurityHeaderRating() {
     this._X_Frame = 'x-frame-options'; // must be - x-frame-options: deny || sameorigin
     this._X_XSS = 'x-xss-protection'; // must be - x-xss-protection: 1; mode=block;
 
+    this._versionChecker = new VersionChecker();
+
     this.rating = 0;
 }
 
@@ -29,6 +31,17 @@ SecurityHeaderRating.prototype.checkHeader = function (name, value) {
             break;
         case this._X_XSS:
             this.checkXxss(value.toLowerCase());
+            break;
+        case this._versionChecker._backend_lang:
+            console.log('thh');
+            this._versionChecker.clear();
+            this._versionChecker.checkLang(value.toLowerCase());
+            this.rating += this._versionChecker.getRating();
+            break;
+        case this._versionChecker._server:
+            this._versionChecker.clear();
+            this._versionChecker.checkServer(value.toLowerCase());
+            this.rating += this._versionChecker.getRating();
             break;
     }
 };
@@ -58,6 +71,7 @@ SecurityHeaderRating.prototype.getRating = function () {
 
 SecurityHeaderRating.prototype.clear = function () {
     this.rating = 0;
+    this._versionChecker.clear();
 };
 
 SecurityHeaderRating.prototype.checkCsp = function (value) {
@@ -95,4 +109,7 @@ SecurityHeaderRating.prototype.checkXxss = function (value) {
     if (parseInt(value) == 1) {
         this.rating += 15;
     }
+};
+SecurityHeaderRating.prototype.getLink = function (callback, value) {
+    return this._versionChecker.getLink(callback, value);
 };

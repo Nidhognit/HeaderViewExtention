@@ -43,7 +43,7 @@ MessageAcceptance.prototype.getClassForStatusCode = function (statusCode) {
 };
 
 MessageAcceptance.prototype.renderPopup = function (responses) {
-    for (first in responses) break;
+    for (var first in responses) break;
     responses = responses[first];
     var self = this;
     if (!Array.isArray(responses) || isArrayEmpty(responses)) {
@@ -70,7 +70,7 @@ MessageAcceptance.prototype.renderPopup = function (responses) {
                 SecurityRating.checkHeader(name, value);
                 return h('tr', {}, [
                     h('td', {}, name),
-                    h('td', {}, value)
+                    h('td', {}, SecurityRating.getLink(h, value))
                 ]);
             })),
             h('thead', {className: self.getClassForStatusCode(statusCode)}, [
