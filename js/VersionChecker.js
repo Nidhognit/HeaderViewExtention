@@ -20,10 +20,10 @@ VersionChecker.prototype.checkLang = function (value) {
 };
 
 VersionChecker.prototype.checkServer = function (value) {
-    if (value.search('nginx')) {
+    if (value.search('nginx' > -1)) {
         this.checkNginxServer(value);
     }
-    else if (value.search('apache')) {
+    else if (value.search('apache' > -1)) {
         this.checkApacheServer(value);
     }
 };

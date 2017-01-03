@@ -33,7 +33,6 @@ SecurityHeaderRating.prototype.checkHeader = function (name, value) {
             this.checkXxss(value.toLowerCase());
             break;
         case this._versionChecker._backend_lang:
-            console.log('thh');
             this._versionChecker.clear();
             this._versionChecker.checkLang(value.toLowerCase());
             this.rating += this._versionChecker.getRating();
@@ -64,7 +63,7 @@ SecurityHeaderRating.prototype.getRating = function () {
         return 'B+';
     } else if (this.rating <= 90) {
         return 'A';
-    } else if (this.rating <= 100) {
+    } else {
         return 'A+';
     }
 };
