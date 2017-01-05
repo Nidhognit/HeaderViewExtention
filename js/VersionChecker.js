@@ -14,16 +14,16 @@ function VersionChecker() {
 
 }
 VersionChecker.prototype.checkLang = function (value) {
-    if (value.search('php' > -1)) {
+    if (value.search('php') > -1) {
         this.checkPhpLang(value);
     }
 };
 
 VersionChecker.prototype.checkServer = function (value) {
-    if (value.search('nginx' > -1)) {
+    if (value.search('nginx') > -1) {
         this.checkNginxServer(value);
     }
-    else if (value.search('apache' > -1)) {
+    else if (value.search('apache') > -1) {
         this.checkApacheServer(value);
     }
 };
