@@ -1,11 +1,7 @@
 function MessageAcceptance() {
     this._default_msg = h('h4', {}, 'Please, reload this page.');
-    this._error_msg = h('h4', {}, 'This tab is not supported.');
 
 }
-MessageAcceptance.prototype.nonBreakingDash = function (str) {
-    return str.replace(/-/g, '\u2011');
-};
 
 MessageAcceptance.prototype.forOwn = function (obj, callback) {
     for (var key in obj) {
@@ -76,9 +72,10 @@ MessageAcceptance.prototype.renderPopup = function (responses) {
             h('thead', {className: self.getClassForStatusCode(statusCode)}, [
                 h('tr', {}, [
                     h('th', {colSpan: 2}, [
-                        h('span', {}, statusLine),
+                        h('strong', {}, statusLine),
+                        h('br',{}),
                         h('strong', {}, method),
-                        h('span', {}, url),
+                        h('span', {className: 'span80'}, url),
                         h('span', {className: 'circle-rating'}, SecurityRating.getRating())
                     ])
                 ])

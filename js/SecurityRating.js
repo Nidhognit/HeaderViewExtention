@@ -74,7 +74,7 @@ SecurityHeaderRating.prototype.clear = function () {
 };
 
 SecurityHeaderRating.prototype.checkCsp = function (value) {
-    if (value.search('unsafe-inline') || value.search('data:') || value.search('eval')) {
+    if (value.search('unsafe-inline') > -1 || value.search('data:') > -1 || value.search('eval') > -1) {
         this.rating += 10;
     } else {
         this.rating += 30;

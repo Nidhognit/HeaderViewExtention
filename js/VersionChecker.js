@@ -2,9 +2,9 @@ function VersionChecker() {
     this._backend_lang = 'x-powered-by';
     this._server = 'server';
 
-    this._php = [[5, 6, 29], [7, 0, 14], [7, 1, 0]];
-    this._nginx = [[1, 10, 2], [1, 11, 7]];
-    this._apache = [[2, 2, 31], [2, 4, 25]];
+    this._php = [[5, 6, 29], [7, 0, 14], [7, 1, 0]];//https://secure.php.net/ChangeLog-7.php
+    this._nginx = [[1, 10, 2], [1, 11, 7]];//https://nginx.org/ru/download.html
+    this._apache = [[2, 2, 31], [2, 4, 25]];//
 
     this.rating = 0;
     this._isPhp = false;
