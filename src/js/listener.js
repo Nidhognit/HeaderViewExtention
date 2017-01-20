@@ -3,7 +3,9 @@
  * Data: {tab_id: {request_id: [(object)], view: (object), statusCode: (int)}}
  */
 
-var messageCreator = new MessageCreator();
+const MessageCreator = require('./MessageCreator');
+
+let messageCreator = new MessageCreator();
 
 /**
  * Clean & Record the received headers

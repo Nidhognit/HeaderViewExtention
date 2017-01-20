@@ -4,7 +4,18 @@
   "description": "Extension that allows to view headers",
   "main": "popup.js",
   "scripts": {
-    "test": "eslint *.js"
+    "clean": "rm -rf dist; mkdir dist",
+    "build:popup": "browserify -d ./src/js/popup.js | exorcist ./dist/popup.bundle.js.map > ./dist/popup.bundle.js",
+    "build:listener": "browserify -d ./src/js/listener.js | exorcist ./dist/listener.bundle.js.map > ./dist/listener.bundle.js",
+    "copy:css": "cp -r ./src/css ./dist/css",
+    "copy:icons": "cp -r ./src/icons ./dist/icons",
+    "copy:files": "cp ./src/*.* ./dist/",
+    "build:all": "(npm run build:popup & npm run build:listener)",
+    "copy:all": "(npm run copy:css & npm run copy:icons & npm run copy:files)",
+    "dist": "npm run clean && (npm run build:all & npm run copy:all)",
+    "build": "npm test && npm run lint && npm run dist",
+    "lint": "eslint js/**/*.js",
+    "test": "ava --verbose"
   },
   "repository": {
     "type": "git",
@@ -21,6 +32,9 @@
   },
   "homepage": "https://github.com/Nidhognit/HeaderViewExtention#readme",
   "devDependencies": {
-    "eslint": "^3.11.1"
+    "ava": "^0.17.0",
+    "browserify": "^13.3.0",
+    "eslint": "^3.11.1",
+    "exorcist": "^0.4.0"
   }
 }

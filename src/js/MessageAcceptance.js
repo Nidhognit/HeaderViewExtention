@@ -1,6 +1,8 @@
+const SecurityHeaderRating = require('./SecurityHeaderRating');
+const { h, isArrayEmpty, compareHeaders } = require('./utils');
+
 function MessageAcceptance() {
     this._default_msg = h('h4', {}, 'Please, reload this page.');
-
 }
 
 MessageAcceptance.prototype.forOwn = function (obj, callback) {
@@ -104,20 +106,4 @@ MessageAcceptance.prototype.render = function ({tag, props, children}) {
     return el;
 };
 
-function h(tag = 'div', props = {}, children = []) {
-    return {
-        tag,
-        props,
-        children
-    };
-}
-
-function isArrayEmpty(arr) {
-    return arr.length === 0;
-}
-
-function compareHeaders(a, b) {
-    var aName = a.name || '';
-    var bName = b.name || '';
-    return aName.localeCompare(bName);
-}
+module.exports = MessageAcceptance;
