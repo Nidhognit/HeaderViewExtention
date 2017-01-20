@@ -4,7 +4,7 @@
   "description": "Extension that allows to view headers",
   "main": "popup.js",
   "scripts": {
-    "clean": "rm -rf dist; mkdir dist",
+    "clean": "rm -rf ./dist && mkdir dist",
     "build:popup": "browserify -d ./src/js/popup.js | exorcist ./dist/popup.bundle.js.map > ./dist/popup.bundle.js",
     "build:listener": "browserify -d ./src/js/listener.js | exorcist ./dist/listener.bundle.js.map > ./dist/listener.bundle.js",
     "copy:css": "cp -r ./src/css ./dist/css",
