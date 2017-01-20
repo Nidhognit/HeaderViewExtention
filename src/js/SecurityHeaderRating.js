@@ -84,7 +84,7 @@ SecurityHeaderRating.prototype.checkCsp = function (value) {
 };
 
 SecurityHeaderRating.prototype.checkHsts = function (value) {
-    var result = value.match(/(max-age=)\d*/);
+    let result = value.match(/(max-age=)\d*/);
     if (result[0] && parseInt(result[0]) > 15552000) {
         this.rating += 10;
     }

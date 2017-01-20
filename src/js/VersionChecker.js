@@ -39,37 +39,27 @@ VersionChecker.prototype.getRating = function () {
 VersionChecker.prototype.getLink = function (calback, value) {
     if (this._isPhp) {
         this._isPhp = false;
-        return [
-            calback('span', {className: 'error'}, value),
-            calback('br', {}, ''),
-            calback('a', {
-                href: 'https://vulners.com/search?query=php-' + this._vulnVersion,
-                target: '_blank'
-            }, 'vulnerable version')
-        ];
-    }else if(this._isNginx){
+        return this._createLink(calback, value, 'php');
+    } else if (this._isNginx) {
         this._isNginx = false;
-        return [
-            calback('span', {className: 'error'}, value),
-            calback('br', {}, ''),
-            calback('a', {
-                href: 'https://vulners.com/search?query=nginx-' + this._vulnVersion,
-                target: '_blank'
-            }, 'vulnerable version')
-        ];
-    }else if(this._isApache){
+        return this._createLink(calback, value, 'nginx');
+    } else if (this._isApache) {
         this._isApache = false;
-        return [
-            calback('span', {className: 'error'}, value),
-            calback('br', {}, ''),
-            calback('a', {
-                href: 'https://vulners.com/search?query=apache-' + this._vulnVersion,
-                target: '_blank'
-            }, 'vulnerable version')
-        ];
+        return this._createLink(calback, value, 'apache');
     }
 
     return value;
+};
+
+VersionChecker.prototype._createLink = function (calback, value, type) {
+    return [
+        calback('span', {className: 'error'}, value),
+        calback('br', {}, ''),
+        calback('a', {
+            href: 'https://vulners.com/search?query=' + type + '-' + this._vulnVersion,
+            target: '_blank'
+        }, 'vulnerable version')
+    ];
 };
 
 VersionChecker.prototype.checkPhpLang = function (value) {
