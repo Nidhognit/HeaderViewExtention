@@ -11,8 +11,8 @@ function VersionChecker() {
     this._isNginx = false;
     this._isApache = false;
     this._vulnVersion = '';
-
 }
+
 VersionChecker.prototype.checkLang = function (value) {
     if (value.search('php') > -1) {
         this.checkPhpLang(value);
@@ -121,3 +121,5 @@ VersionChecker.prototype.isOldVersion = function (value, currentVersions) {
     }
     return false; //current
 };
+
+module.exports = VersionChecker;

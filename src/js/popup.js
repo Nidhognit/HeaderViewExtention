@@ -1,3 +1,5 @@
+const MessageAcceptance = require('./MessageAcceptance');
+
 /**
  * Ask for recorded headers on popup opening
  */
@@ -9,8 +11,9 @@ chrome.tabs.getSelected(null, function (tab) {
             tab_id: tab.id
         },
         function (response) {
-            var messageAcceptance = new MessageAcceptance();
-            var popup = messageAcceptance.render(messageAcceptance.renderPopup(response));
+            const messageAcceptance = new MessageAcceptance();
+            const popup = messageAcceptance.render(messageAcceptance.renderPopup(response));
+
             document.getElementById('content').appendChild(popup);
         });
 });
