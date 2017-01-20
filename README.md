@@ -1,5 +1,7 @@
 # HeaderViewExtention
 
+[![Build Status](https://travis-ci.org/Nidhognit/HeaderViewExtention.svg?branch=master)](https://travis-ci.org/Nidhognit/HeaderViewExtention)
+
 # Description:
 
 This browser extension evaluates a degree of trustworthiness and safety on every website you visit by inspecting the received HTTP headers and their compliance with the leading industry standards: a configured Content Security Policy (CSP), an absence of disclosed vulnerabilities for the current server version, etc. All HTTP headers (along with the redirects) are being recorded for the further examination in a convenient tabular form together with a grade (from A to F) of the security compliance.
