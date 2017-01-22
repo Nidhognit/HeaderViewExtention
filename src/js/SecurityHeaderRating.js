@@ -4,7 +4,7 @@ function SecurityHeaderRating() {
     this._CSP = 'content-security-policy'; // it some hard, for config, please read https://content-security-policy.com/
     this._HSTS = 'strict-transport-security'; // must be  strict-transport-security: max-age=15552000; or more
     this._HPKP = 'public-key-pins'; //optional https://wiki.mozilla.org/Security/Guidelines/Web_Security#HTTP_Public_Key_Pinning
-    this._X_CTP = 'x-content-type-options'; // must be - x-xss-protection: nosniff;
+    this._X_CTP = 'x-content-type-options'; // must be - x-content-type-options: nosniff;
     this._X_Frame = 'x-frame-options'; // must be - x-frame-options: deny || sameorigin
     this._X_XSS = 'x-xss-protection'; // must be - x-xss-protection: 1; mode=block;
 
@@ -76,7 +76,7 @@ SecurityHeaderRating.prototype.clear = function () {
 };
 
 SecurityHeaderRating.prototype.checkCsp = function (value) {
-    if (value.search('unsafe-inline') > -1 || value.search('data:') > -1 || value.search('eval') > -1) {
+    if (value.search('unsafe-inline') > -1 || value.search('eval') > -1) {
         this.rating += 10;
     } else {
         this.rating += 30;
@@ -85,8 +85,11 @@ SecurityHeaderRating.prototype.checkCsp = function (value) {
 
 SecurityHeaderRating.prototype.checkHsts = function (value) {
     let result = value.match(/(max-age=)\d*/);
-    if (result[0] && parseInt(result[0]) > 15552000) {
-        this.rating += 10;
+    if (result && result[0]) {
+        let time = result[0].replace('max-age=','');
+        if(parseInt(time) >= 15552000){
+            this.rating += 10;
+        }
     }
 };
 
