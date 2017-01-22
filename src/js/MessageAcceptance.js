@@ -43,16 +43,16 @@ MessageAcceptance.prototype.getClassForStatusCode = function (statusCode) {
 MessageAcceptance.prototype.renderPopup = function (responses) {
     for (var first in responses) break;
     responses = responses[first];
-    var self = this;
+    let self = this;
     if (!Array.isArray(responses) || isArrayEmpty(responses)) {
         return this._default_msg;
     }
 
-    var view = h();
-    var SecurityRating = new SecurityHeaderRating();
+    let view = h();
+    const SecurityRating = new SecurityHeaderRating();
 
-    for (var i = 0, l = responses.length; i < l; i++) {
-        var {
+    for (let i = 0, l = responses.length; i < l; i++) {
+        let {
             responseHeaders,
             url,
             method,
@@ -91,11 +91,11 @@ MessageAcceptance.prototype.renderPopup = function (responses) {
 };
 
 MessageAcceptance.prototype.render = function ({tag, props, children}) {
-    var self = this;
-    var el = document.createElement(tag);
+    const self = this;
+    let el = document.createElement(tag);
     Object.assign(el, props);
 
-    if (typeof children === 'string') {
+    if (typeof children === 'string' || typeof children === 'number') {
         el.textContent = children;
     } else if (Array.isArray(children)) {
         children.forEach(child => el.appendChild(self.render(child)));

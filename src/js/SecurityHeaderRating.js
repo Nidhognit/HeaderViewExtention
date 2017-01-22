@@ -11,39 +11,41 @@ function SecurityHeaderRating() {
     this._versionChecker = new VersionChecker();
 
     this.rating = 0;
+    this.correct = false;
 }
 
 SecurityHeaderRating.prototype.checkHeader = function (name, value) {
+    this.correct = false;
     name = name.toLowerCase();
     switch (name) {
-    case this._CSP:
-        this.checkCsp(value.toLowerCase());
-        break;
-    case this._HSTS:
-        this.checkHsts(value.toLowerCase());
-        break;
-    case this._HPKP:
-        this.checkHpkp(value.toLowerCase());
-        break;
-    case this._X_CTP:
-        this.checkXctp(value.toLowerCase());
-        break;
-    case this._X_Frame:
-        this.checkXframe(value.toLowerCase());
-        break;
-    case this._X_XSS:
-        this.checkXxss(value.toLowerCase());
-        break;
-    case this._versionChecker._backend_lang:
-        this._versionChecker.clear();
-        this._versionChecker.checkLang(value.toLowerCase());
-        this.rating += this._versionChecker.getRating();
-        break;
-    case this._versionChecker._server:
-        this._versionChecker.clear();
-        this._versionChecker.checkServer(value.toLowerCase());
-        this.rating += this._versionChecker.getRating();
-        break;
+        case this._CSP:
+            this.checkCsp(value.toLowerCase());
+            break;
+        case this._HSTS:
+            this.checkHsts(value.toLowerCase());
+            break;
+        case this._HPKP:
+            this.checkHpkp(value.toLowerCase());
+            break;
+        case this._X_CTP:
+            this.checkXctp(value.toLowerCase());
+            break;
+        case this._X_Frame:
+            this.checkXframe(value.toLowerCase());
+            break;
+        case this._X_XSS:
+            this.checkXxss(value.toLowerCase());
+            break;
+        case this._versionChecker._backend_lang:
+            this._versionChecker.clear();
+            this._versionChecker.checkLang(value.toLowerCase());
+            this.rating += this._versionChecker.getRating();
+            break;
+        case this._versionChecker._server:
+            this._versionChecker.clear();
+            this._versionChecker.checkServer(value.toLowerCase());
+            this.rating += this._versionChecker.getRating();
+            break;
     }
 };
 SecurityHeaderRating.prototype.getRating = function () {
@@ -70,6 +72,11 @@ SecurityHeaderRating.prototype.getRating = function () {
     }
 };
 
+SecurityHeaderRating.prototype.setRating = function (rating, correct = true) {
+    this.rating += rating;
+    this.correct = correct;
+};
+
 SecurityHeaderRating.prototype.clear = function () {
     this.rating = 0;
     this._versionChecker.clear();
@@ -77,45 +84,51 @@ SecurityHeaderRating.prototype.clear = function () {
 
 SecurityHeaderRating.prototype.checkCsp = function (value) {
     if (value.search('unsafe-inline') > -1 || value.search('eval') > -1) {
-        this.rating += 10;
+        this.setRating(10, false);
     } else {
-        this.rating += 30;
+        this.setRating(30);
     }
 };
 
 SecurityHeaderRating.prototype.checkHsts = function (value) {
     let result = value.match(/(max-age=)\d*/);
     if (result && result[0]) {
-        let time = result[0].replace('max-age=','');
-        if(parseInt(time) >= 15552000){
-            this.rating += 10;
+        let time = result[0].replace('max-age=', '');
+        if (parseInt(time) >= 15552000) {
+            this.setRating(10);
         }
     }
 };
 
 SecurityHeaderRating.prototype.checkHpkp = function (/* value */) {
-    this.rating += 10; // optional
+    this.setRating(10); // optional
 };
 
 SecurityHeaderRating.prototype.checkXctp = function (value) {
     if (value == 'nosniff') {
-        this.rating += 10;
+        this.setRating(10);
     }
 };
 
 SecurityHeaderRating.prototype.checkXframe = function (value) {
     if (value == 'deny' || value == 'sameorigin') {
-        this.rating += 25;
+        this.setRating(25);
     }
 };
 
 SecurityHeaderRating.prototype.checkXxss = function (value) {
     if (parseInt(value) == 1) {
-        this.rating += 15;
+        this.setRating(15);
     }
 };
 
 SecurityHeaderRating.prototype.getLink = function (callback, value) {
+    if (this.correct) {
+        return [
+            callback('span', {className: 'good-header', title: 'correct security header'}, value)
+        ];
+    }
+
     return this._versionChecker.getLink(callback, value);
 };
 

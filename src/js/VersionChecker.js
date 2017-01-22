@@ -11,6 +11,7 @@ function VersionChecker() {
     this._isNginx = false;
     this._isApache = false;
     this._vulnVersion = '';
+    this._currentVersion = '';
 }
 
 VersionChecker.prototype.checkLang = function (value) {
@@ -36,26 +37,27 @@ VersionChecker.prototype.getRating = function () {
     return this.rating;
 };
 
-VersionChecker.prototype.getLink = function (calback, value) {
+VersionChecker.prototype.getLink = function (callback, value) {
     if (this._isPhp) {
         this._isPhp = false;
-        return this._createLink(calback, value, 'php');
+        return this._createLink(callback, value, 'php');
     } else if (this._isNginx) {
         this._isNginx = false;
-        return this._createLink(calback, value, 'nginx');
+        return this._createLink(callback, value, 'nginx');
     } else if (this._isApache) {
         this._isApache = false;
-        return this._createLink(calback, value, 'apache');
+        return this._createLink(callback, value, 'apache');
     }
 
     return value;
 };
 
-VersionChecker.prototype._createLink = function (calback, value, type) {
+VersionChecker.prototype._createLink = function (callback, value, type) {
     return [
-        calback('span', {className: 'error'}, value),
-        calback('br', {}, ''),
-        calback('a', {
+        callback('span', {className: 'error'}, value),
+        callback('span', {}, ' (current: ' + this._currentVersion + ')'),
+        callback('br', {}, ''),
+        callback('a', {
             href: 'https://vulners.com/search?query=' + type + '-' + this._vulnVersion,
             target: '_blank'
         }, 'vulnerable version')
@@ -98,9 +100,11 @@ VersionChecker.prototype.isOldVersion = function (value, currentVersions) {
         for (let i = 0; i < length; i++) {
             if (currentVersions[i][0] == versionList[0]) {
                 if (currentVersions[i][1] > versionList[1]) {
+                    this._currentVersion = currentVersions[i].join('.');
                     return true; //old
                 } else if (currentVersions[i][1] == versionList[1]) {
                     if (currentVersions[i][2] > versionList[2]) {
+                        this._currentVersion = currentVersions[i].join('.');
                         return true; //old
                     } else if (currentVersions[i][2] == versionList[2]) {
                         return false; //current

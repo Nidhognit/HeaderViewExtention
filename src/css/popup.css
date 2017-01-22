@@ -81,6 +81,10 @@ td:first-child {
     background-color: rgba(192, 57, 43, .3);
 }
 
+.good-header{
+    background-color: #00FF7F;
+}
+
 .circle-rating {
     border-radius: 25%;
     width: 30px;
