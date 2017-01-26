@@ -79,7 +79,11 @@ test('checkHsts: sets 0 for not disclosing strict-transport protection', t => {
 
 test('checkCsp: sets 30 for disclosing CSP protection', t => {
     const headers = new SecurityHeaderRating();
-    headers.checkCsp("default-src 'self'");
+    headers.checkCsp("default-src 'self';");
+    t.is(headers.rating, 30);
+    headers.clear();
+
+    headers.checkCsp("default-src 'none'; base-uri 'self'; block-all-mixed-content; child-src www.youtube-nocookie.com; connect-src 'self' www.google-analytics.com; font-src 'self'; form-action 'self'; media-src 'self'; script-src 'self' www.google-analytics.com; style-src 'self' 'unsafe-inline';");
     t.is(headers.rating, 30);
     headers.clear();
 
@@ -90,11 +94,23 @@ test('checkCsp: sets 30 for disclosing CSP protection', t => {
 
 test('checkCsp: sets 10 for disclosing CSP protection with unsafe', t => {
     const headers = new SecurityHeaderRating();
-    headers.checkCsp("script-src 'unsafe-inline'");
+    headers.checkCsp("script-src 'unsafe-inline';");
     t.is(headers.rating, 10);
     headers.clear();
 
-    headers.checkCsp("script-src 'unsafe-eval'");
+    headers.checkCsp("script-src 'unsafe-eval';");
+    t.is(headers.rating, 10);
+    headers.clear();
+
+    headers.checkCsp("default-src 'none'; script-src 'self' www.youtube-nocookie.com 'unsafe-inline'; base-uri 'self'; block-all-mixed-content;");
+    t.is(headers.rating, 10);
+    headers.clear();
+
+    headers.checkCsp("default-src 'none'; script-src 'self' www.youtube-nocookie.com 'unsafe-eval'; base-uri 'self'; block-all-mixed-content;");
+    t.is(headers.rating, 10);
+    headers.clear();
+
+    headers.checkCsp("default-src 'none';");
     t.is(headers.rating, 10);
     headers.clear();
 });

@@ -83,10 +83,20 @@ SecurityHeaderRating.prototype.clear = function () {
 };
 
 SecurityHeaderRating.prototype.checkCsp = function (value) {
-    if (value.search('unsafe-inline') > -1 || value.search('eval') > -1) {
-        this.setRating(10, false);
+    let script = value.match(/script-src.[^;]*;/);
+    if (script && script[0]) {
+        if (script[0].search('unsafe-inline') > -1 || script[0].search('unsafe-eval') > -1) {
+            this.setRating(10, false);
+        } else {
+            this.setRating(30);
+        }
     } else {
-        this.setRating(30);
+        let defaultSrc = value.match(/default-src.[^;]*;/);
+        if (defaultSrc && defaultSrc[0] && defaultSrc[0].search('self') > -1) {
+            this.setRating(30);
+        } else {
+            this.setRating(10, false);
+        }
     }
 };
 
