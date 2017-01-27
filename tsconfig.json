@@ -1,0 +1,13 @@
+{
+    "compilerOptions": {
+        "allowJs": true,
+        "module": "commonjs",
+        "moduleResolution": "node",
+        "noImplicitAny": false,
+        "outDir": ".tmp",
+        "rootDir": "src",
+        "sourceMap": true,
+        "strictNullChecks": false,
+        "target": "es6"
+    }
+}

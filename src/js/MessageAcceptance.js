@@ -75,7 +75,7 @@ MessageAcceptance.prototype.renderPopup = function (responses) {
                 h('tr', {}, [
                     h('th', {colSpan: 2}, [
                         h('strong', {}, statusLine),
-                        h('br',{}),
+                        h('br', {}),
                         h('strong', {}, method),
                         h('span', {className: 'span80'}, url),
                         h('span', {className: 'circle-rating'}, SecurityRating.getRating())

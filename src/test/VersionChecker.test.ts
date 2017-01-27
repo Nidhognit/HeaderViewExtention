@@ -1,5 +1,5 @@
-const test = require('ava');
-const VersionChecker = require('../js/VersionChecker');
+import test from 'ava';
+import VersionChecker = require('../js/VersionChecker');
 
 test('checkLang: sets -5 for disclosing PHP', t => {
     const checker = new VersionChecker();

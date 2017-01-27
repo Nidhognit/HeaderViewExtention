@@ -18,34 +18,34 @@ SecurityHeaderRating.prototype.checkHeader = function (name, value) {
     this.correct = false;
     name = name.toLowerCase();
     switch (name) {
-        case this._CSP:
-            this.checkCsp(value.toLowerCase());
-            break;
-        case this._HSTS:
-            this.checkHsts(value.toLowerCase());
-            break;
-        case this._HPKP:
-            this.checkHpkp(value.toLowerCase());
-            break;
-        case this._X_CTP:
-            this.checkXctp(value.toLowerCase());
-            break;
-        case this._X_Frame:
-            this.checkXframe(value.toLowerCase());
-            break;
-        case this._X_XSS:
-            this.checkXxss(value.toLowerCase());
-            break;
-        case this._versionChecker._backend_lang:
-            this._versionChecker.clear();
-            this._versionChecker.checkLang(value.toLowerCase());
-            this.rating += this._versionChecker.getRating();
-            break;
-        case this._versionChecker._server:
-            this._versionChecker.clear();
-            this._versionChecker.checkServer(value.toLowerCase());
-            this.rating += this._versionChecker.getRating();
-            break;
+    case this._CSP:
+        this.checkCsp(value.toLowerCase());
+        break;
+    case this._HSTS:
+        this.checkHsts(value.toLowerCase());
+        break;
+    case this._HPKP:
+        this.checkHpkp(value.toLowerCase());
+        break;
+    case this._X_CTP:
+        this.checkXctp(value.toLowerCase());
+        break;
+    case this._X_Frame:
+        this.checkXframe(value.toLowerCase());
+        break;
+    case this._X_XSS:
+        this.checkXxss(value.toLowerCase());
+        break;
+    case this._versionChecker._backend_lang:
+        this._versionChecker.clear();
+        this._versionChecker.checkLang(value.toLowerCase());
+        this.rating += this._versionChecker.getRating();
+        break;
+    case this._versionChecker._server:
+        this._versionChecker.clear();
+        this._versionChecker.checkServer(value.toLowerCase());
+        this.rating += this._versionChecker.getRating();
+        break;
     }
 };
 SecurityHeaderRating.prototype.getRating = function () {
