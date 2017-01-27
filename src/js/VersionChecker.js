@@ -58,7 +58,7 @@ VersionChecker.prototype._createLink = function (callback, value, type) {
         callback('span', {}, ' (current: ' + this._currentVersion + ')'),
         callback('br', {}, ''),
         callback('a', {
-            href: 'https://vulners.com/search?query=' + type + '-' + this._vulnVersion,
+            href: 'https://vulners.com/search?query=affectedSoftware.name:"' + type + '"%20%20AND%20affectedSoftware.version:^' + this._vulnVersion,
             target: '_blank'
         }, 'vulnerable version')
     ];
