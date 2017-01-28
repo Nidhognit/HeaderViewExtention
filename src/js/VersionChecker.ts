@@ -1,9 +1,10 @@
-function VersionChecker() {
+type Version = [number, number, number];
+
+export default function VersionChecker() {
     this._backend_lang = 'x-powered-by';
     this._server = 'server';
-
-    this._php = [[5, 6, 30], [7, 0, 15], [7, 1, 1]]; //https://secure.php.net/ChangeLog-7.php OR https://github.com/php/php-src/releases
-    this._nginx = [[1, 10, 2], [1, 11, 7]]; //https://nginx.org/ru/download.html
+    this._php = [[5, 6, 30], [7, 0, 15], [7, 1, 1]]; // https://secure.php.net/ChangeLog-7.php OR https://github.com/php/php-src/releases
+    this._nginx = [[1, 10, 2], [1, 11, 7]]; // https://nginx.org/ru/download.html
     this._apache = [[2, 2, 31], [2, 4, 25]]; //
 
     this.rating = 0;
@@ -58,7 +59,7 @@ VersionChecker.prototype._createLink = function (callback, value, type) {
         callback('span', {}, ' (current: ' + this._currentVersion + ')'),
         callback('br', {}, ''),
         callback('a', {
-            href: 'https://vulners.com/search?query=' + type + '-' + this._vulnVersion,
+            href: 'https://vulners.com/search?query=affectedSoftware.name:"' + type + '"%20%20AND%20affectedSoftware.version:^' + this._vulnVersion,
             target: '_blank'
         }, 'vulnerable version')
     ];
@@ -91,29 +92,29 @@ VersionChecker.prototype.checkNginxServer = function (value) {
     }
 };
 
-VersionChecker.prototype.isOldVersion = function (value, currentVersions) {
+VersionChecker.prototype.isOldVersion = function (value, currentVersions: Version[]) {
     let version = value.match(/\d*\.\d*\.\d*/g);
+
     if (version) {
         this._vulnVersion = version[0];
-        let versionList = version[0].split('.');
+        let versionList: number[] = version[0].split('.').map(Number);
         let length = currentVersions.length;
+
         for (let i = 0; i < length; i++) {
-            if (currentVersions[i][0] == versionList[0]) {
+            if (currentVersions[i][0] === versionList[0]) {
                 if (currentVersions[i][1] > versionList[1]) {
                     this._currentVersion = currentVersions[i].join('.');
-                    return true; //old
-                } else if (currentVersions[i][1] == versionList[1]) {
+                    return true; // old
+                } else if (currentVersions[i][1] === versionList[1]) {
                     if (currentVersions[i][2] > versionList[2]) {
                         this._currentVersion = currentVersions[i].join('.');
-                        return true; //old
-                    } else if (currentVersions[i][2] == versionList[2]) {
-                        return false; //current
+                        return true; // old
+                    } else if (currentVersions[i][2] === versionList[2]) {
+                        return false; // current
                     }
                 }
             }
         }
     }
-    return false; //current
+    return false; // current
 };
-
-module.exports = VersionChecker;

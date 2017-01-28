@@ -1,5 +1,6 @@
 import test from 'ava';
-import SecurityHeaderRating = require('../js/SecurityHeaderRating');
+import SecurityHeaderRating from '../js/SecurityHeaderRating';
+import {h} from '../js/utils';
 
 test('checkXxss: sets 15 for disclosing XSS protection', t => {
     const headers = new SecurityHeaderRating();
@@ -112,5 +113,24 @@ test('checkCsp: sets 10 for disclosing CSP protection with unsafe', t => {
 
     headers.checkCsp('default-src \'none\';');
     t.is(headers.rating, 10);
+    headers.clear();
+});
+
+test('getLink: check correct object for valid security headers', t => {
+    const headers = new SecurityHeaderRating();
+    let value = 'default-src \'self\';';
+    headers.checkCsp(value);
+    let linkArr = headers.getLink(h, value);
+    t.is(headers.correct, true);
+    t.is(linkArr[0].children, value);
+    t.is(linkArr[0].props.className, 'good-header');
+    headers.clear();
+
+    value = 'max-age=25552000;';
+    headers.checkHsts(value);
+    linkArr = headers.getLink(h, value);
+    t.is(headers.correct, true);
+    t.is(linkArr[0].children, value);
+    t.is(linkArr[0].props.className, 'good-header');
     headers.clear();
 });

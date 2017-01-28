@@ -1,4 +1,4 @@
-const MessageAcceptance = require('./MessageAcceptance');
+import MessageAcceptance from './MessageAcceptance';
 
 /**
  * Ask for recorded headers on popup opening

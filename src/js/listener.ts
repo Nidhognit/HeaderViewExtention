@@ -3,7 +3,7 @@
  * Data: {tab_id: {request_id: [(object)], view: (object), statusCode: (int)}}
  */
 
-const MessageCreator = require('./MessageCreator');
+import MessageCreator from './MessageCreator';
 
 let messageCreator = new MessageCreator();
 
