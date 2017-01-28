@@ -16,7 +16,7 @@
     "bundle:popup": "browserify -d ./.tmp/js/popup.js | exorcist ./dist/popup.bundle.js.map > ./dist/popup.bundle.js",
     "bundle:listener": "browserify -d ./.tmp/js/listener.js | exorcist ./dist/listener.bundle.js.map > ./dist/listener.bundle.js",
 
-    "build": "npm run clean && (npm run lint & npm run compile) && (npm run test:unit & npm run bundle & npm run copy)",
+    "build": "npm run clean && (npm run lint & npm run compile) && npm run test:unit && (npm run bundle & npm run copy)",
 
     "lint:js": "eslint src/**/*.js",
     "lint:ts": "tslint src/**/*.ts",
