@@ -1,120 +1,120 @@
 type Version = [number, number, number];
 
-export default function VersionChecker() {
-    this._backend_lang = 'x-powered-by';
-    this._server = 'server';
-    this._php = [[5, 6, 30], [7, 0, 15], [7, 1, 1]]; // https://secure.php.net/ChangeLog-7.php OR https://github.com/php/php-src/releases
-    this._nginx = [[1, 10, 2], [1, 11, 7]]; // https://nginx.org/ru/download.html
-    this._apache = [[2, 2, 31], [2, 4, 25]]; //
+export default class VersionChecker {
+    public _backend_lang: string = 'x-powered-by';
+    public _server: string = 'server';
+    public _php: Version[] = [[5, 6, 30], [7, 0, 15], [7, 1, 1]]; // https://secure.php.net/ChangeLog-7.php OR https://github.com/php/php-src/releases
+    public _nginx: Version[] = [[1, 10, 2], [1, 11, 7]]; // https://nginx.org/ru/download.html
+    public _apache: Version[] = [[2, 2, 31], [2, 4, 25]]; //
+    public _isPhp: boolean = false;
+    public _isNginx: boolean = false;
+    public _isApache: boolean = false;
+    public _vulnVersion: string = '';
+    public _currentVersion: string = '';
 
-    this.rating = 0;
-    this._isPhp = false;
-    this._isNginx = false;
-    this._isApache = false;
-    this._vulnVersion = '';
-    this._currentVersion = '';
-}
+    public rating: number = 0;
 
-VersionChecker.prototype.checkLang = function (value) {
-    if (value.search('php') > -1) {
-        this.checkPhpLang(value);
-    }
-};
-
-VersionChecker.prototype.checkServer = function (value) {
-    if (value.search('nginx') > -1) {
-        this.checkNginxServer(value);
-    }
-    else if (value.search('apache') > -1) {
-        this.checkApacheServer(value);
-    }
-};
-
-VersionChecker.prototype.clear = function () {
-    this.rating = 0;
-};
-
-VersionChecker.prototype.getRating = function () {
-    return this.rating;
-};
-
-VersionChecker.prototype.getLink = function (callback, value) {
-    if (this._isPhp) {
-        this._isPhp = false;
-        return this._createLink(callback, value, 'php');
-    } else if (this._isNginx) {
-        this._isNginx = false;
-        return this._createLink(callback, value, 'nginx');
-    } else if (this._isApache) {
-        this._isApache = false;
-        return this._createLink(callback, value, 'apache');
+    public checkLang(value): void {
+        if (value.search('php') > -1) {
+            this.checkPhpLang(value);
+        }
     }
 
-    return value;
-};
-
-VersionChecker.prototype._createLink = function (callback, value, type) {
-    return [
-        callback('span', {className: 'error'}, value),
-        callback('span', {}, ' (current: ' + this._currentVersion + ')'),
-        callback('br', {}, ''),
-        callback('a', {
-            href: 'https://vulners.com/search?query=affectedSoftware.name:"' + type + '"%20%20AND%20affectedSoftware.version:^' + this._vulnVersion,
-            target: '_blank'
-        }, 'vulnerable version')
-    ];
-};
-
-VersionChecker.prototype.checkPhpLang = function (value) {
-    if (this.isOldVersion(value, this._php)) {
-        this.rating = -20;
-        this._isPhp = true;
-    } else {
-        this.rating = -5;
+    public checkServer(value): void {
+        if (value.search('nginx') > -1) {
+            this.checkNginxServer(value);
+        }
+        else if (value.search('apache') > -1) {
+            this.checkApacheServer(value);
+        }
     }
-};
 
-VersionChecker.prototype.checkApacheServer = function (value) {
-    if (this.isOldVersion(value, this._apache)) {
-        this.rating = -20;
-        this._isApache = true;
-    } else {
-        this.rating = -5;
+    public clear(): void {
+        this.rating = 0;
     }
-};
 
-VersionChecker.prototype.checkNginxServer = function (value) {
-    if (this.isOldVersion(value, this._nginx)) {
-        this.rating = -20;
-        this._isNginx = true;
-    } else {
-        this.rating = -5;
+    public getRating(): number {
+        return this.rating;
     }
-};
 
-VersionChecker.prototype.isOldVersion = function (value, currentVersions: Version[]) {
-    let version = value.match(/\d*\.\d*\.\d*/g);
+    public getLink(callback, value: any): any[] {
+        if (this._isPhp) {
+            this._isPhp = false;
+            return this._createLink(callback, value, 'php');
+        } else if (this._isNginx) {
+            this._isNginx = false;
+            return this._createLink(callback, value, 'nginx');
+        } else if (this._isApache) {
+            this._isApache = false;
+            return this._createLink(callback, value, 'apache');
+        }
 
-    if (version) {
-        this._vulnVersion = version[0];
-        let versionList: number[] = version[0].split('.').map(Number);
-        let length = currentVersions.length;
+        return value;
+    }
 
-        for (let i = 0; i < length; i++) {
-            if (currentVersions[i][0] === versionList[0]) {
-                if (currentVersions[i][1] > versionList[1]) {
-                    this._currentVersion = currentVersions[i].join('.');
-                    return true; // old
-                } else if (currentVersions[i][1] === versionList[1]) {
-                    if (currentVersions[i][2] > versionList[2]) {
+    public _createLink(callback, value, type): any[] {
+        return [
+            callback('span', {className: 'error'}, value),
+            callback('span', {}, ' (current: ' + this._currentVersion + ')'),
+            callback('br', {}, ''),
+            callback('a', {
+                href: 'https://vulners.com/search?query=affectedSoftware.name:"' + type + '"%20%20AND%20affectedSoftware.version:^' + this._vulnVersion,
+                target: '_blank'
+            }, 'vulnerable version')
+        ];
+    }
+
+    public checkPhpLang(value): void {
+        if (this.isOldVersion(value, this._php)) {
+            this.rating = -20;
+            this._isPhp = true;
+        } else {
+            this.rating = -5;
+        }
+    }
+
+    public checkApacheServer(value): void {
+        if (this.isOldVersion(value, this._apache)) {
+            this.rating = -20;
+            this._isApache = true;
+        } else {
+            this.rating = -5;
+        }
+    }
+
+    public checkNginxServer(value): void {
+        if (this.isOldVersion(value, this._nginx)) {
+            this.rating = -20;
+            this._isNginx = true;
+        } else {
+            this.rating = -5;
+        }
+    }
+
+    public isOldVersion(value, currentVersions: Version[]): boolean {
+        let version = value.match(/\d*\.\d*\.\d*/g);
+
+        if (version) {
+            this._vulnVersion = version[0];
+            let versionList: number[] = version[0].split('.').map(Number);
+            let length = currentVersions.length;
+
+            for (let i = 0; i < length; i++) {
+                if (currentVersions[i][0] === versionList[0]) {
+                    if (currentVersions[i][1] > versionList[1]) {
                         this._currentVersion = currentVersions[i].join('.');
                         return true; // old
-                    } else if (currentVersions[i][2] === versionList[2]) {
-                        return false; // current
+                    } else if (currentVersions[i][1] === versionList[1]) {
+                        if (currentVersions[i][2] > versionList[2]) {
+                            this._currentVersion = currentVersions[i].join('.');
+                            return true; // old
+                        } else if (currentVersions[i][2] === versionList[2]) {
+                            return false; // current
+                        }
                     }
                 }
             }
         }
+        return false; // current
     }
-    return false; // current
-};
+}
