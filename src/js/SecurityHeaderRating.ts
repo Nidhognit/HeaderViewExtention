@@ -1,9 +1,9 @@
-const VersionChecker = require('./VersionChecker');
+import VersionChecker from './VersionChecker';
 
-function SecurityHeaderRating() {
+export default function SecurityHeaderRating() {
     this._CSP = 'content-security-policy'; // it some hard, for config, please read https://content-security-policy.com/
     this._HSTS = 'strict-transport-security'; // must be  strict-transport-security: max-age=15552000; or more
-    this._HPKP = 'public-key-pins'; //optional https://wiki.mozilla.org/Security/Guidelines/Web_Security#HTTP_Public_Key_Pinning
+    this._HPKP = 'public-key-pins'; // optional https://wiki.mozilla.org/Security/Guidelines/Web_Security#HTTP_Public_Key_Pinning
     this._X_CTP = 'x-content-type-options'; // must be - x-content-type-options: nosniff;
     this._X_Frame = 'x-frame-options'; // must be - x-frame-options: deny || sameorigin
     this._X_XSS = 'x-xss-protection'; // must be - x-xss-protection: 1; mode=block;
@@ -14,38 +14,38 @@ function SecurityHeaderRating() {
     this.correct = false;
 }
 
-SecurityHeaderRating.prototype.checkHeader = function (name, value) {
+SecurityHeaderRating.prototype.checkHeader = function (name: string, value: string) {
     this.correct = false;
     name = name.toLowerCase();
     switch (name) {
-        case this._CSP:
-            this.checkCsp(value.toLowerCase());
-            break;
-        case this._HSTS:
-            this.checkHsts(value.toLowerCase());
-            break;
-        case this._HPKP:
-            this.checkHpkp(value.toLowerCase());
-            break;
-        case this._X_CTP:
-            this.checkXctp(value.toLowerCase());
-            break;
-        case this._X_Frame:
-            this.checkXframe(value.toLowerCase());
-            break;
-        case this._X_XSS:
-            this.checkXxss(value.toLowerCase());
-            break;
-        case this._versionChecker._backend_lang:
-            this._versionChecker.clear();
-            this._versionChecker.checkLang(value.toLowerCase());
-            this.rating += this._versionChecker.getRating();
-            break;
-        case this._versionChecker._server:
-            this._versionChecker.clear();
-            this._versionChecker.checkServer(value.toLowerCase());
-            this.rating += this._versionChecker.getRating();
-            break;
+    case this._CSP:
+        this.checkCsp(value.toLowerCase());
+        break;
+    case this._HSTS:
+        this.checkHsts(value.toLowerCase());
+        break;
+    case this._HPKP:
+        this.checkHpkp(value.toLowerCase());
+        break;
+    case this._X_CTP:
+        this.checkXctp(value.toLowerCase());
+        break;
+    case this._X_Frame:
+        this.checkXframe(value.toLowerCase());
+        break;
+    case this._X_XSS:
+        this.checkXxss(value.toLowerCase());
+        break;
+    case this._versionChecker._backend_lang:
+        this._versionChecker.clear();
+        this._versionChecker.checkLang(value.toLowerCase());
+        this.rating += this._versionChecker.getRating();
+        break;
+    case this._versionChecker._server:
+        this._versionChecker.clear();
+        this._versionChecker.checkServer(value.toLowerCase());
+        this.rating += this._versionChecker.getRating();
+        break;
     }
 };
 SecurityHeaderRating.prototype.getRating = function () {
@@ -72,7 +72,7 @@ SecurityHeaderRating.prototype.getRating = function () {
     }
 };
 
-SecurityHeaderRating.prototype.setRating = function (rating, correct = true) {
+SecurityHeaderRating.prototype.setRating = function (rating: number, correct: boolean = true) {
     this.rating += rating;
     this.correct = correct;
 };
@@ -82,7 +82,7 @@ SecurityHeaderRating.prototype.clear = function () {
     this._versionChecker.clear();
 };
 
-SecurityHeaderRating.prototype.checkCsp = function (value) {
+SecurityHeaderRating.prototype.checkCsp = function (value: string) {
     let script = value.match(/script-src.[^;]*;/);
     if (script && script[0]) {
         if (script[0].search('unsafe-inline') > -1 || script[0].search('unsafe-eval') > -1) {
@@ -100,7 +100,7 @@ SecurityHeaderRating.prototype.checkCsp = function (value) {
     }
 };
 
-SecurityHeaderRating.prototype.checkHsts = function (value) {
+SecurityHeaderRating.prototype.checkHsts = function (value: string) {
     let result = value.match(/(max-age=)\d*/);
     if (result && result[0]) {
         let time = result[0].replace('max-age=', '');
@@ -114,20 +114,20 @@ SecurityHeaderRating.prototype.checkHpkp = function (/* value */) {
     this.setRating(10); // optional
 };
 
-SecurityHeaderRating.prototype.checkXctp = function (value) {
-    if (value == 'nosniff') {
+SecurityHeaderRating.prototype.checkXctp = function (value: string) {
+    if (value === 'nosniff') {
         this.setRating(10);
     }
 };
 
-SecurityHeaderRating.prototype.checkXframe = function (value) {
-    if (value == 'deny' || value == 'sameorigin') {
+SecurityHeaderRating.prototype.checkXframe = function (value: string) {
+    if (value === 'deny' || value === 'sameorigin') {
         this.setRating(25);
     }
 };
 
-SecurityHeaderRating.prototype.checkXxss = function (value) {
-    if (parseInt(value) == 1) {
+SecurityHeaderRating.prototype.checkXxss = function (value: string) {
+    if (parseInt(value, 10) === 1) {
         this.setRating(15);
     }
 };
@@ -141,5 +141,3 @@ SecurityHeaderRating.prototype.getLink = function (callback, value) {
 
     return this._versionChecker.getLink(callback, value);
 };
-
-module.exports = SecurityHeaderRating;

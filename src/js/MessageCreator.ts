@@ -1,4 +1,4 @@
-function MessageCreator() {
+export default function MessageCreator() {
     this._message = [];
 }
 
@@ -28,5 +28,3 @@ MessageCreator.prototype.getMessage = function (tabId) {
 MessageCreator.prototype.getStatusCode = function (tabId) {
     return (this._message[tabId] && this._message[tabId].statusCode !== 200) ? this._message[tabId].statusCode.toString() : '';
 };
-
-module.exports = MessageCreator;

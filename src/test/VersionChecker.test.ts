@@ -1,6 +1,6 @@
-const test = require('ava');
-const VersionChecker = require('../js/VersionChecker');
-const {h}= require('../js/utils');
+import test from 'ava';
+import VersionChecker from '../js/VersionChecker';
+import {h} from '../js/utils';
 
 test('checkLang: sets -5 for disclosing PHP', t => {
     const checker = new VersionChecker();
@@ -73,23 +73,23 @@ test('checkServer: not disclosing server', t => {
 
 test('checkServer: not disclosing server', t => {
     const checker = new VersionChecker();
-    var value = 'php/5.3.3';
+    let value = 'php/5.3.3';
     checker.checkLang(value);
-    var linkArr = checker.getLink(h,value);
+    let linkArr = checker.getLink(h, value);
     t.is(linkArr.length, 4);
     t.is(linkArr[0].props.className, 'error');
     t.is(linkArr[3].props.href, 'https://vulners.com/search?query=affectedSoftware.name:"php"%20%20AND%20affectedSoftware.version:^5.3.3');
 
     value = 'nginx/1.8.1';
     checker.checkServer(value);
-    linkArr = checker.getLink(h,value);
+    linkArr = checker.getLink(h, value);
     t.is(linkArr.length, 4);
     t.is(linkArr[0].props.className, 'error');
     t.is(linkArr[3].props.href, 'https://vulners.com/search?query=affectedSoftware.name:"nginx"%20%20AND%20affectedSoftware.version:^1.8.1');
 
     value = 'apache/2.2.2';
     checker.checkServer(value);
-    linkArr = checker.getLink(h,value);
+    linkArr = checker.getLink(h, value);
     t.is(linkArr.length, 4);
     t.is(linkArr[0].props.className, 'error');
     t.is(linkArr[3].props.href, 'https://vulners.com/search?query=affectedSoftware.name:"apache"%20%20AND%20affectedSoftware.version:^2.2.2');

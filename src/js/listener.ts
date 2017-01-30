@@ -3,7 +3,7 @@
  * Data: {tab_id: {request_id: [(object)], view: (object), statusCode: (int)}}
  */
 
-const MessageCreator = require('./MessageCreator');
+import MessageCreator from './MessageCreator';
 
 let messageCreator = new MessageCreator();
 
@@ -11,7 +11,7 @@ let messageCreator = new MessageCreator();
  * Clean & Record the received headers
  */
 chrome.webRequest.onHeadersReceived.addListener(function (details) {
-    if(messageCreator.hasRequest(details.tabId,details.requestId )) {
+    if (messageCreator.hasRequest(details.tabId, details.requestId )) {
         messageCreator.addDetails(details);
     }
     messageCreator.setDetailsToMessage(details);
@@ -21,7 +21,7 @@ chrome.webRequest.onHeadersReceived.addListener(function (details) {
 }, ['responseHeaders']);
 
 chrome.webRequest.onCompleted.addListener(function (details) {
-    if(messageCreator.hasRequest(details.tabId,details.requestId )) {
+    if (messageCreator.hasRequest(details.tabId, details.requestId )) {
         messageCreator.addDetails(details);
         messageCreator.setDetailsToMessage(details);
     }

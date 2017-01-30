@@ -1,12 +1,12 @@
-const SecurityHeaderRating = require('./SecurityHeaderRating');
-const { h, isArrayEmpty, compareHeaders } = require('./utils');
+import { h, isArrayEmpty, compareHeaders } from './utils';
+import SecurityHeaderRating from './SecurityHeaderRating';
 
-function MessageAcceptance() {
+export default function MessageAcceptance() {
     this._default_msg = h('h4', {}, 'Please, reload this page.');
 }
 
 MessageAcceptance.prototype.forOwn = function (obj, callback) {
-    for (var key in obj) {
+    for (let key in obj) {
         if (obj.hasOwnProperty(key)) {
             callback(obj[key], key, obj);
         }
@@ -14,7 +14,7 @@ MessageAcceptance.prototype.forOwn = function (obj, callback) {
 };
 
 MessageAcceptance.prototype.mapForOwn = function (obj, callback) {
-    var arr = [];
+    let arr = [];
 
     this.forOwn(obj, function (value, key, _obj) {
         arr.push(callback(value, key, _obj));
@@ -41,7 +41,7 @@ MessageAcceptance.prototype.getClassForStatusCode = function (statusCode) {
 };
 
 MessageAcceptance.prototype.renderPopup = function (responses) {
-    for (var first in responses) break;
+    const first = Object.keys(responses)[0];
     responses = responses[first];
     let self = this;
     if (!Array.isArray(responses) || isArrayEmpty(responses)) {
@@ -63,7 +63,7 @@ MessageAcceptance.prototype.renderPopup = function (responses) {
         responseHeaders.sort(compareHeaders);
         SecurityRating.clear();
 
-        var table = h('table', {}, [
+        let table = h('table', {}, [
             h('tbody', {}, self.mapForOwn(responseHeaders, function ({name, value}) {
                 SecurityRating.checkHeader(name, value);
                 return h('tr', {}, [
@@ -75,7 +75,7 @@ MessageAcceptance.prototype.renderPopup = function (responses) {
                 h('tr', {}, [
                     h('th', {colSpan: 2}, [
                         h('strong', {}, statusLine),
-                        h('br',{}),
+                        h('br', {}),
                         h('strong', {}, method),
                         h('span', {className: 'span80'}, url),
                         h('span', {className: 'circle-rating'}, SecurityRating.getRating())
@@ -84,7 +84,7 @@ MessageAcceptance.prototype.renderPopup = function (responses) {
             ])
         ]);
 
-        view.children.push(table);
+        (view.children as any[]).push(table);
     }
 
     return view;
@@ -105,5 +105,3 @@ MessageAcceptance.prototype.render = function ({tag, props, children}) {
 
     return el;
 };
-
-module.exports = MessageAcceptance;
