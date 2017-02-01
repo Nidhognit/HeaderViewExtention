@@ -52,18 +52,6 @@ export default class VersionChecker {
         return value;
     }
 
-    public _createLink(callback, value, type): any[] {
-        return [
-            callback('span', {className: 'error'}, value),
-            callback('span', {}, ' (current: ' + this._currentVersion + ')'),
-            callback('br', {}, ''),
-            callback('a', {
-                href: 'https://vulners.com/search?query=affectedSoftware.name:"' + type + '"%20%20AND%20affectedSoftware.version:^' + this._vulnVersion,
-                target: '_blank'
-            }, 'vulnerable version')
-        ];
-    }
-
     public checkPhpLang(value): void {
         if (this.isOldVersion(value, this._php)) {
             this.rating = -20;
@@ -90,8 +78,19 @@ export default class VersionChecker {
             this.rating = -5;
         }
     }
+    protected _createLink(callback, value, type): any[] {
+        return [
+            callback('span', {className: 'error'}, value),
+            callback('span', {}, ' (current: ' + this._currentVersion + ')'),
+            callback('br', {}, ''),
+            callback('a', {
+                href: 'https://vulners.com/search?query=affectedSoftware.name:"' + type + '"%20%20AND%20affectedSoftware.version:^' + this._vulnVersion,
+                target: '_blank'
+            }, 'vulnerable version')
+        ];
+    }
 
-    public isOldVersion(value, currentVersions: Version[]): boolean {
+    protected isOldVersion(value, currentVersions: Version[]): boolean {
         let version = value.match(/\d*\.\d*\.\d*/g);
 
         if (version) {
