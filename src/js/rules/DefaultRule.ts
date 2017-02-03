@@ -1,3 +1,4 @@
+import AbstractRule from "./AbstractRule";
 export default class DefaultRule extends AbstractRule implements RuleInterface {
 
     public checkHeader():boolean {
@@ -8,7 +9,4 @@ export default class DefaultRule extends AbstractRule implements RuleInterface {
         // code
     }
 
-    public getVirtualElement() {
-
-    }
 }
