@@ -1,6 +1,7 @@
 interface RuleInterface  {
-    getHeader(): string;
-    check(value: string): void;
+    checkHeader(name:string): boolean;
+    check(): void;
+    addValue(value: string): void;
     getRating():number;
     getVirtualElement();
 }
