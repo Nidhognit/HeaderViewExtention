@@ -2,7 +2,6 @@ import ResponseElement from "../ResponseElement";
 export default class AbstractRule {
     protected header: string;
     protected rating: number = 0;
-    public correct: boolean = false;
     protected valueList: string[] = [];
     protected responseElement: ResponseElement[] = [];
 
@@ -18,13 +17,13 @@ export default class AbstractRule {
         return this.rating;
     }
 
-    public getVirtualElement(): any[] {
+    public getVirtualElement(): ResponseElement[] {
         return this.responseElement;
     }
 
     protected addError(errorList: string[]): void {
         let responseElement = new ResponseElement();
-        responseElement.isError = true;
+        responseElement.isError = 1;
         responseElement.header = this.header.toUpperCase();
         responseElement.value = this.valueList[0];
         responseElement.messageList = errorList;
@@ -33,7 +32,7 @@ export default class AbstractRule {
 
     protected addSuccess(commentList: string[]): void {
         let responseElement = new ResponseElement();
-        responseElement.isError = false;
+        responseElement.isError = 0;
         responseElement.header = this.header.toUpperCase();
         responseElement.value = this.valueList[0];
         responseElement.messageList = commentList;
@@ -46,7 +45,7 @@ export default class AbstractRule {
 
         for (let i = 0; i < headerCount; i++) {
             let responseElement = new ResponseElement();
-            responseElement.isError = true;
+            responseElement.isError = 1;
             responseElement.header = this.header.toUpperCase();
             responseElement.value = this.valueList[i];
             responseElement.messageList = errorList;

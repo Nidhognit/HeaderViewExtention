@@ -1,6 +1,9 @@
-import ContentSecurityPolicyRule from './rules/ContentSecurityPolicyRule';
 import StrictTransportSecurityRule from './rules/StrictTransportSecurityRule';
 import DefaultRule from './rules/DefaultRule';
+import ContentSecurityPolicyRule from './rules/ContentSecurityPolicyRule';
+import XContentTypeOptionsRule from './rules/XContentTypeOptionsRule';
+import XFrameOptionsRule from './rules/XFrameOptionsRule';
+import XxssProtectionRule from './rules/XxssProtectionRule';
 
 type Header = [{name: string, value: string}];
 
@@ -10,6 +13,9 @@ export default class SecurityHeaderRating {
     protected ruleList = [
         new ContentSecurityPolicyRule(),
         new StrictTransportSecurityRule(),
+        new XContentTypeOptionsRule(),
+        new XFrameOptionsRule(),
+        new XxssProtectionRule(),
         new DefaultRule()
     ];
 
