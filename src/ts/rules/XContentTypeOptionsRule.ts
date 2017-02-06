@@ -1,4 +1,4 @@
-import AbstractRule from "./AbstractRule";
+import {AbstractRule} from "./AbstractRule";
 export default class XContentTypeOptionsRule extends AbstractRule implements RuleInterface {
     protected header = 'x-content-type-options';
 

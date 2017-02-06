@@ -1,4 +1,4 @@
-import AbstractRule from "./AbstractRule";
+import {AbstractRule} from "./AbstractRule";
 export default class XxssProtectionRule extends AbstractRule implements RuleInterface {
     protected header = 'x-xss-protection';
 

@@ -1,4 +1,4 @@
-import AbstractRule from "./AbstractRule";
+import {AbstractRule} from "./AbstractRule";
 import ResponseElement from "../ResponseElement";
 export default class DefaultRule extends AbstractRule implements RuleInterface {
 

@@ -1,4 +1,4 @@
-import AbstractRule from "./AbstractRule";
+import {AbstractRule} from "./AbstractRule";
 export default class XFrameOptionsRule extends AbstractRule implements RuleInterface {
     protected header = 'x-frame-options';
 

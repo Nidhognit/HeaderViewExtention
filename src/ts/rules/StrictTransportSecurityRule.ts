@@ -1,4 +1,4 @@
-import AbstractRule from "./AbstractRule";
+import {AbstractRule} from "./AbstractRule";
 export default class StrictTransportSecurityRule extends AbstractRule implements RuleInterface {
     protected header = 'strict-transport-security';
     readonly recommendedMaxAge = 15552000;

@@ -1,6 +1,6 @@
 import test from 'ava';
-import VersionChecker from '../js/VersionChecker';
-import {h} from '../js/utils';
+import VersionChecker from '../ts/VersionChecker';
+import {h} from '../ts/utils';
 
 test('checkLang: sets -5 for disclosing PHP', t => {
     const checker = new VersionChecker();

@@ -1,5 +1,5 @@
 import test from 'ava';
-import StrictTransportSecurityRule from "../../js/rules/StrictTransportSecurityRule";
+import StrictTransportSecurityRule from "../../ts/rules/StrictTransportSecurityRule";
 
 test('checkHeader: false to all error headers', t => {
     const rule = new StrictTransportSecurityRule();

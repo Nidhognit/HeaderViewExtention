@@ -1,6 +1,6 @@
 import test from 'ava';
-import SecurityHeaderRating from '../js/SecurityHeaderRating';
-import {h} from '../js/utils';
+import SecurityHeaderRating from '../ts/SecurityHeaderRating';
+import {h} from '../ts/utils';
 
 test('checkXxss: sets 15 for disclosing XSS protection', t => {
     const headers = new SecurityHeaderRating();

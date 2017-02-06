@@ -1,5 +1,5 @@
 import ResponseElement from "../ResponseElement";
-export default class AbstractRule {
+export abstract class AbstractRule {
     protected header: string;
     protected rating: number = 0;
     protected valueList: string[] = [];
