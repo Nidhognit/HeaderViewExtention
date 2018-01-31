@@ -3,9 +3,9 @@ type Version = [number, number, number];
 export default class VersionChecker {
     public _backend_lang: string = 'x-powered-by';
     public _server: string = 'server';
-    public _php: Version[] = [[5, 6, 31], [7, 0, 23], [7, 1, 9]]; // https://secure.php.net/ChangeLog-7.php OR https://github.com/php/php-src/releases
-    public _nginx: Version[] = [[1, 12, 1], [1, 13, 5]]; // https://nginx.org/ru/download.html
-    public _apache: Version[] = [[2, 2, 34], [2, 4, 27]]; // https://httpd.apache.org/download.cgi
+    public _php: Version[] = [[5, 6, 33], [7, 0, 27], [7, 1, 13], [7, 2, 1]]; // https://secure.php.net/ChangeLog-7.php OR https://github.com/php/php-src/releases
+    public _nginx: Version[] = [[1, 12, 2], [1, 13, 8]]; // https://nginx.org/ru/download.html
+    public _apache: Version[] = [[2, 2, 34], [2, 4, 29]]; // https://httpd.apache.org/download.cgi
     public _isPhp: boolean = false;
     public _isNginx: boolean = false;
     public _isApache: boolean = false;

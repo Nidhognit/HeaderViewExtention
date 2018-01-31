@@ -3,7 +3,7 @@
   "manifest_version": 2,
   "name": "Header View",
   "short_name": "Header View",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "background": {
     "persistent": true,
     "scripts": ["listener.bundle.js"]
